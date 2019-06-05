@@ -1,0 +1,256 @@
+{% extends "base/content.html" %}
+{% load static %}
+<!--
+   Carrega o nome da página para que apareça no título.
+   -->
+{% block name %}
+Edit URL
+{% endblock name %}
+<!--
+   Carrega a arvore da página, para que cada uma tenha a sua localização.
+   -->
+{% block arvore %}
+<div class="col-md-5 col-8 align-self-center">
+   <h3 class="text-themecolor m-b-0 m-t-0">Edit URL</h3>
+   <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+         <a href="{% url 'VigilantOnion:dashboard' %}">Home</a>
+      </li>
+      <li class="breadcrumb-item">
+         <a href="{% url 'VigilantOnion:newurl' %}">Register new URL</a>
+      </li>
+      <li class="breadcrumb-item active">
+         Edit URL
+      </li>
+   </ol>
+</div>
+<div class="col-md-7 col-4 align-self-center"></div>
+{% endblock %}
+<!--
+   Carrega os arquivos CSS que essa página em questão necessita para o seu funcionamento.
+   -->
+{% block css %}
+<link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+<style media="screen">[type="checkbox"]:not(:checked), [type="checkbox"]:checked {position: initial !important;left: -0px !important;opacity: 1 !important;}</style>
+<link href="{% static 'assets/plugins/Magnific-Popup-master/dist/magnific-popup.css' %}" rel="stylesheet">
+{% endblock css %}
+<!--
+   Carrega os arquivos JS que essa página em questão necessita para o seu funcionamento.
+   -->
+{% block js %}
+<script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static 'assets/plugins/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
+<script src="{% static 'js/mask.js' %}"></script>
+<script src="{% static 'assets/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/buttons.flash.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/jszip.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/pdfmake.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/vfs_fonts.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/buttons.html5.min.js' %}"></script>
+<script src="{% static 'assets/plugins/buttons/buttons.print.min.js' %}"></script>
+
+
+<script src="{% static 'assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup.min.js' %}"></script>
+<script src="{% static 'assets/plugins/Magnific-Popup-master/dist/jquery.magnific-popup-init.js' %}"></script>
+
+<script>$(function(){$("#myTable").DataTable(),$(function(){var e=$("#example").DataTable({columnDefs:[{visible:!1,targets:2}],order:[[2,"asc"]],displayLength:25,drawCallback:function(a){var e=this.api(),r=e.rows({page:"current"}).nodes(),t=null;e.column(2,{page:"current"}).data().each(function(a,e){t!==a&&($(r).eq(e).before('<tr class="group"><td colspan="5">'+a+"</td></tr>"),t=a)})}});$("#example tbody").on("click","tr.group",function(){var a=e.order()[0];2===a[0]&&"asc"===a[1]?e.order([2,"desc"]).draw():e.order([2,"asc"]).draw()})})}),$("#example23").DataTable({dom:"Bfrtip",buttons:["copy","csv","excel","pdf","print"]});</script>
+<script>
+   $(document).ready(function(){
+   	$('#detalhes-usuario-sucesso')[0].click(function() {});
+   });
+   $(document).ready(function(){
+   	 $('#detalhes-usuario-erro')[0].click(function() {});
+   });
+   $(document).ready(function() {
+             $('#erro-usuario-cliente')[0].click(function() {});
+         });
+</script>
+<script type="text/javascript">
+   function Change(input) {
+     var str = document.getElementById(input).value;
+     var word = / /g;
+     var replacestr = str.replace(word, "_");
+     document.getElementById(input).value = replacestr;
+   }
+</script>
+{%  endblock js%}
+<!--
+   O conteúdo só dessa página em questão
+   -->
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'success'  %}
+<span id="detalhes-usuario-sucesso"></span>
+{% elif message.tags == 'error'  %}
+<span id="detalhes-usuario-erro"></span>
+{% endif %}
+{% endfor %}
+{% endif %}
+<div class="col-12">
+   <div class="row">
+      <div class="col-lg-4 col-xlg-3 col-md-5">
+         <div class="card">
+           <div class="el-card-item">
+              <div class="el-card-avatar el-overlay-1">
+                {% if detail_dashboard_view.cover %}
+                  <a class="image-popup-vertical-fit" href="/media/{{ detail_dashboard_view.cover }}"> <img class="card-img-top" src="/media/{{ detail_dashboard_view.cover }}" alt="user"> </a>
+                {% else %}
+                  <a class="image-popup-vertical-fit" href="/media/img/NoImageFound.png"> <img class="card-img-top" src="/media/img/NoImageFound.png" alt="user"> </a>
+                {% endif %}
+              </div>
+             </div>
+         </div>
+         <div class="card">
+            <div class="card-body">
+               <small class="text-muted">Last seen </small>
+               {% if detail_dashboard_view.last_date %}
+               <h6>{{ detail_dashboard_view.last_date }}</h6>
+               {% else %}
+               <h6>Uninformed</h6>
+               {% endif %}
+               <small class="text-muted p-t-30 db">Registration date</small>
+               {% if detail_dashboard_view.created_in %}
+               <h6>{{ detail_dashboard_view.created_in }}</h6>
+               {% else %}
+               <h6>Uninformed</h6>
+               {% endif %}
+            </div>
+         </div>
+      </div>
+      <div class="col-lg-8 col-xlg-9 col-md-7">
+         <div class="card">
+            <ul class="nav nav-tabs profile-tab" role="tablist">
+               <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#perfil" role="tab">Profile</a>
+               </li>
+               {% if user.is_staff %}
+               <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#editar" role="tab">Edit</a>
+               </li>
+               {% endif %}
+            </ul>
+            <div class="tab-content">
+               <div class="tab-pane active" id="perfil" role="tabpanel">
+                  <div class="card-body">
+                     <h4 class="font-medium m-t-30">More information</h4>
+                     <hr>
+                     <div class="row">
+                        <div class="col-md-6 col-xs-6">
+                           <strong>Source</strong>
+                           <br>
+                           {% if detail_dashboard_view.source %}
+                           <p class="text-muted">{{ detail_dashboard_view.source }}</p>
+                           {% else %}
+                           <p class="text-muted">No source</p>
+                           {% endif %}
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                           <strong>Status</strong>
+                           <br>
+                           {% if detail_dashboard_view.status %}
+                           <p class="text-muted">200</p>
+                           {% else %}
+                           <p class="text-muted">404</p>
+                           {% endif %}
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                           <strong>URL</strong>
+                           <br>
+                           {% if detail_dashboard_view.url %}
+                           <p class="text-muted"><a href="{{ detail_dashboard_view.url }}" target="_blank">{{ detail_dashboard_view.url }}</a></p>
+                           {% else %}
+                           <p class="text-muted">Not found</p>
+                           {% endif %}
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                           <strong>Category</strong>
+                           <br>
+                           {% if detail_dashboard_view.categorie %}
+                           <p class="text-muted">{{ detail_dashboard_view.categorie }}</p>
+                           {% else %}
+                           <p class="text-muted">Without category</p>
+                           {% endif %}
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                           <strong>Company</strong>
+                           <br>
+                           {% if detail_dashboard_view.company.all %}
+                             {% for x in detail_dashboard_view.company.all %}
+                              <div class="label label-table label-danger">{{x}}</div>
+                             {% endfor %}
+                           {% else %}
+                           <p class="text-muted">No keyword was found at this URL.</p>
+                           {% endif %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               {% if user.is_staff %}
+               <div class="tab-pane" id="editar" role="tabpanel">
+                  <div class="card-body">
+                     <form enctype="multipart/form-data" role="form" action="." method="post" class="form">
+                        {% csrf_token %}
+                        {% for edit_user in form_edit_dashboard %}
+                        <div class="form-group m-t-40 row">
+                           <label for="{{edit_user.label}}" class="col-2 col-form-label">{{edit_user.label}}</label>
+                           <div class="col-10">
+                              {{ edit_user }} {{ edit_user.errors }}
+                              <small class="form-control-feedback">{{ edit_user.help_text }}</small>
+                           </div>
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10" name="save_edit_users">Save</button>
+                     </form>
+                  </div>
+               </div>
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="col-lg-12">
+   <div class="card card-outline-info">
+      <div class="card-header">
+         <h4 class="m-b-0 text-white">Sub URLs found in crawler</h4>
+      </div>
+      <div class="card-body">
+         <h4 class="card-title">Data Export</h4>
+         <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+         <div class="table-responsive m-t-40">
+            <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+               <thead>
+                  <tr>
+                     <th>ID</th>
+                     <th>Status</th>
+                     <th>URL</th>
+                  </tr>
+               </thead>
+               <tfoot>
+                  <tr>
+                     <th>ID</th>
+                     <th>Status</th>
+                     <th>URL</th>
+                  </tr>
+               </tfoot>
+               <tbody>
+                  {% for url in detail_dashboard_view.more.all %}
+                  <tr id="1" class="gradeX">
+                     <td>{{ url.id }}</td>
+                     {% if url.status_more %}
+                     <td>200</td>
+                     {% else %}
+                     <td>404</td>
+                     {% endif %}
+                     <td><a href="http://{{ url.url_more }}" target="_blank">{{ url.url_more }}</a></td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %}

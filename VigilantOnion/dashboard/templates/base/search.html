@@ -1,0 +1,87 @@
+{% extends "base/content.html" %}
+{% load static %}
+{% block name %}
+	Search Result For "{{ query }}"
+{% endblock name %}
+{% block css %}
+    <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+		<style media="screen">.page-titles{background: none;margin: 0 -30px 10px;padding: 25px;padding-bottom: 0px;-webkit-box-shadow: none;box-shadow: none;}</style>
+{% endblock css %}
+{% block js %}
+    <script src="{% static 'assets/plugins/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#erro-usuario-cliente')[0].click(function() {});
+    });
+  </script>
+{%  endblock js%}
+{% block content %}
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'success'  %}
+          <span id="criar-cliente-sucesso"></span>
+        {% elif message.tags == 'error'  %}
+          <span id="erro-cliente-cliente"></span>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+		<div class="col-12">
+				<div class="card">
+						<div class="card-body">
+								<h4 class="card-title">Search Result For "{{ query }}"</h4>
+								<h6 class="card-subtitle">About {{cont_result}} result ( 0.10 seconds)</h6>
+								<ul class="search-listing">
+									{% for results in resultado %}
+										<li>
+												<h3><a href="http://{{ results.url }}">{{ results.url }}</a></h3>
+												<a href="{% url 'VigilantOnion:editurls' pk=results.pk  %}" class="search-links">More information about the url, click here.</a>
+												<br/>
+												<br/>
+												{% if results.status == 1 %}
+													<p>Category: {{ results.categorie }} | Last visited: {{ results.last_date }}</p>
+												{% elif results.status == 0 %}
+													<p>Last visited: {{ results.last_date }}</p>
+												{% endif %}
+												<p>
+													{% if results.status == 1 %}
+														<span class="label label-info">Online</span>
+													{% elif results.status == 0 %}
+														<span class="label label-danger">Offiline</span>
+													{% else %}
+														<span class="label label-warning">Not visited</span>
+													{% endif %}
+													<span class="delete_search">
+														<a class="cursos_pointer" data-target="#del_{{ results.pk}}" data-toggle="modal" data-original-title="Delete">
+															<i class="mdi mdi-delete text-danger"></i>
+														</a>
+													</span>
+												</p>
+												<div id="del_{{ results.pk}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+														<div class="modal-dialog">
+																<div class="modal-content">
+																		<div class="modal-header">
+																				<h4 class="modal-title" id="myModalLabel">Delete User</h4>
+																				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+																		</div>
+																		<div class="modal-body">
+																				<h4>You are about to delete the user{{ all_users.username }}</h4>
+																				<p>Are you sure you want to delete user {{all_users.username}}? This process is irreversible, meaning that if you accidentally delete the user you will need to register it again in our system.</p>
+																				<p>Remember with great powers come great responsibilities. Watch out!</p>
+																		</div>
+																		<div class="modal-footer">
+																			<a href="{% url 'VigilantOnion:del_urls' pk=results.pk  %}" class="btn btn-danger waves-effect"> Delete </a>
+																			<button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Exit</button>
+																		</div>
+																</div>
+														</div>
+												</div>
+										</li>
+									{% endfor %}
+								</ul>
+								<br />
+								<br />
+								{% include 'base/paginate.html' %}
+						</div>
+				</div>
+		</div>
+{% endblock content %}

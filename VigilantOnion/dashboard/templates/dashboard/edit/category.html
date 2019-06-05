@@ -1,0 +1,120 @@
+{% extends "base/content.html" %}
+{% load static %}
+<!--
+   Carrega o nome da página para que apareça no título.
+   -->
+{% block name %}
+Edit category
+{% endblock name %}
+<!--
+   Carrega a arvore da página, para que cada uma tenha a sua localização.
+   -->
+{% block arvore %}
+<div class="col-md-5 col-8 align-self-center">
+   <h3 class="text-themecolor m-b-0 m-t-0">Edit category</h3>
+   <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+         <a href="{% url 'VigilantOnion:dashboard' %}">Home</a>
+      </li>
+      <li class="breadcrumb-item">
+         <a href="{% url 'VigilantOnion:newcategory' %}">New category</a>
+      </li>
+      <li class="breadcrumb-item active">
+         Edit category
+      </li>
+   </ol>
+</div>
+<div class="col-md-7 col-4 align-self-center"></div>
+{% endblock %}
+<!--
+   Carrega os arquivos CSS que essa página em questão necessita para o seu funcionamento.
+   -->
+{% block css %}
+<link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+<style media="screen">[type="checkbox"]:not(:checked), [type="checkbox"]:checked {position: initial !important;left: -0px !important;opacity: 1 !important;}</style>
+{% endblock css %}
+<!--
+   Carrega os arquivos JS que essa página em questão necessita para o seu funcionamento.
+   -->
+{% block js %}
+<script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static 'assets/plugins/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
+<script src="{% static 'assets/plugins/styleswitcher/jQuery.style.switcher.js' %}"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+     $('#criar-usuario-sucesso')[0].click(function() {});
+   });
+
+   $(document).ready(function() {
+       $('#detalhes-usuario-erro')[0].click(function() {});
+   });
+   $(document).ready(function() {
+       $('#erro-usuario-cliente')[0].click(function() {});
+   });
+</script>
+<script type="text/javascript">
+   function Change(input) {
+     var str = document.getElementById(input).value;
+     var word = / /g;
+     var replacestr = str.replace(word, "_");
+     document.getElementById(input).value = replacestr;
+   }
+</script>
+<script type="text/javascript">
+   var chk = $('input[type="checkbox"]');
+   chk.each(function(){
+       var v = $(this).attr('checked') == 'checked'?1:0;
+       $(this).after('<input type="hidden" name="'+$(this).attr('rel')+'" value="'+v+'" />');
+   });
+
+   chk.change(function(){
+       var v = $(this).is(':checked')?1:0;
+       $(this).next('input[type="hidden"]').val(v);
+   });
+</script>
+{%  endblock js%}
+<!--
+   O conteúdo só dessa página em questão
+   -->
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'success'  %}
+<span id="criar-usuario-sucesso"></span>
+{% elif message.tags == 'error'  %}
+<span id="detalhes-usuario-erro"></span>
+{% endif %}
+{% endfor %}
+{% endif %}
+<div class="col-lg-12">
+   <div class="card card-outline-info">
+      <div class="card-header">
+         <h4 class="m-b-0 text-white">Edit Category {{ detail_dashboard_view.nome_fantasia }}</h4>
+      </div>
+      <div class="card-body">
+         <form enctype="multipart/form-data" class="form-horizontal form-bordered" role="form" action="." method="post">
+            {% csrf_token %}
+            <div class="form-body">
+               {% for register_users in form_edit_dashboard %}
+               <div class="form-group row">
+                  <label class="control-label text-right col-md-3" for="{{ register_dashboard.id_for_label }}">{{ register_users.label }}</label>
+                  <div class="col-sm-9">
+                     {{ register_users }} {{ register_users.errors }}
+                     <small class="form-control-feedback">{{ register_users.help_text }}</small>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+            <div class="row col-md-">
+               <div class="col-lg-2 col-md-4">
+                  <button type="submit" class="btn waves-effect waves-light btn-block btn-info" name="register_user">Save</button>
+               </div>
+               <div class="col-lg-2 col-md-4">
+                  <button type="reset" class="btn waves-effect waves-light btn-block btn-secondary">Reset</button>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+{% endblock content %}

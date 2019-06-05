@@ -1,0 +1,127 @@
+{% extends "base/content.html" %}
+{% load static %}
+<!--
+Carrega o nome da página para que apareça no título.
+-->
+{% block name %}
+	All users
+{% endblock name %}
+<!--
+Carrega a arvore da página, para que cada uma tenha a sua localização.
+-->
+{% block arvore %}
+	<div class="col-md-5 col-8 align-self-center">
+		<h3 class="text-themecolor m-b-0 m-t-0">All users</h3>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item">
+				<a href="{% url 'VigilantOnion:dashboard' %}">Home</a>
+			</li>
+			<li class="breadcrumb-item active">
+				All users
+			</li>
+		</ol>
+	</div>
+	<div class="col-md-7 col-4 align-self-center"></div>
+{% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+{% endblock css %}
+{% block js %}
+	<script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
+  <script src="{% static 'assets/plugins/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
+	<script type="text/javascript">
+	    $(document).ready(function() {
+	      $('#delete-usuario-sucesso')[0].click(function() {});
+	    });
+
+	    $(document).ready(function() {
+	        $('#delete-usuario-erro')[0].click(function() {});
+	    });
+	    $(document).ready(function() {
+            $('#erro-usuario-cliente')[0].click(function() {});
+        });
+  </script>
+{%  endblock js%}
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success'  %}
+            <span id="delete-usuario-sucesso"></span>
+        {% elif message.tags == 'error'  %}
+            <span id="delete-usuario-erro"></span>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+	<div class="col-12">
+	  <div class="card">
+	    <div class="card-body">
+	      <h4 class="card-title">Users</h4>
+	      <h6 class="card-subtitle">
+	        <span class= "padding_right_1rem"><i class="fa fa-circle  text-danger"></i>	User disabled</span> |
+	        <span class= "padding_total_1rem"><i class="fa  fa-circle text-info"></i> Super User</span>
+	      </h6>
+	      <div class="table-responsive">
+	        <table class="table table-striped">
+	          <thead>
+	            <tr>
+	              <th>Username</th>
+	              <th>Name</th>
+	              <th>Actions</th>
+	            </tr>
+	            <tbody>
+	              {% for all_users in users %}
+									{% if all_users.username == 'admin' %}
+
+									{% else %}
+									<tr class="{% if all_users.is_superuser == True %}table-info{% elif all_users.is_active == False %}table-danger {% endif %}">
+										<td>{{ all_users.username }}</td>
+										<td>{{ all_users.name }}</td>
+	                  <td>
+	                      <a href="{% url 'VigilantOnion:user_edit' pk=all_users.pk  %}" data-toggle="tooltip" data-original-title="Edit">
+	                        <i class="mdi mdi-account-edit text-inverse m-r-10"></i>
+	                      </a>
+	                      {% if all_users.username == 'admin' %}
+		                      {% else %}
+		                        <a class="cursos_pointer" data-target="#del_{{ all_users.pk}}" data-toggle="modal" data-original-title="Delete">
+		                          <i class="mdi mdi-delete text-danger"></i>
+		                        </a>
+		                      {% endif %}
+	                      {% if all_users.username == 'admin' %}
+
+	                      {% else %}
+	                        <div id="del_{{ all_users.pk}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	                            <div class="modal-dialog">
+	                                <div class="modal-content">
+	                                    <div class="modal-header">
+	                                        <h4 class="modal-title" id="myModalLabel">Delete User</h4>
+	                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	                                    </div>
+	                                    <div class="modal-body">
+	                                        <h4>You are about to delete the user{{ all_users.username }}</h4>
+	                                        <p>Are you sure you want to delete user {{all_users.username}}? This process is irreversible, meaning that if you accidentally delete the user you will need to register it again in our system.</p>
+	                                        <p>Remember with great powers come great responsibilities. Watch out!</p>
+	                                    </div>
+	                                    <div class="modal-footer">
+	                                      <a href="{% url 'VigilantOnion:del_user' pk=all_users.pk  %}" class="btn btn-danger waves-effect"> Delete </a>
+	                                      <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Exit</button>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                      {% endif %}
+	                  </td>
+	                </tr>
+									{% endif %}
+	              {% endfor %}
+	            </tbody>
+	          </thead>
+	        </table>
+	      </div>
+				{% include 	'base/paginate.html' %}
+	    </div>
+	  </div>
+	</div>
+
+{% endblock content %}

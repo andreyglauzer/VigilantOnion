@@ -1,0 +1,13 @@
+host_db: localhost
+user_db: root
+password_db: password
+database: django_onion
+github_login: user
+github_passwd: password
+telegram_chat_id: -ID CHANNEL TELEGRAM
+telegram_token: BOT TOKEN TELEGRAM
+type_proxy: socks5h
+server_proxy: localhost
+port_proxy: 9050
+api_key: API GOOLE
+cse_id: CSE GOOLE
