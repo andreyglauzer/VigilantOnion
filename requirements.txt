@@ -4,7 +4,7 @@ cachetools==3.1.0
 certifi==2018.11.29
 chardet==3.0.4
 configparser==3.7.3
-Django==2.1.7
+Django==2.2.13
 google-api-python-client==1.7.8
 google-auth==1.6.3
 google-auth-httplib2==0.0.3
