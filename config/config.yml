@@ -1,0 +1,14 @@
+debug: False
+dbname: "database.db"
+dbpath: "utils/database"
+server_proxy: localhost
+port_proxy: 9050
+type_proxy: socks5h
+timeout: 30
+score_categorie: 20
+score_keywords: 40
+count_categories: 5
+daystime: 10
+sendlog: True
+logport: 5151
+logip: "localhost"
