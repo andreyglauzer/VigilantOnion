@@ -69,7 +69,7 @@ class GistAPI:
 
         if pages:
             cont = 2
-            while cont <= 1:  # int(pages[-2]):
+            while cont <= int(pages[-2]):
                 cont += 1
                 full_url = f"https://gist.github.com/search?l=Text&p={cont-1}&q={urllib.parse.quote('.onio')}"
                 self.urls.append(full_url)
