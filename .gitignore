@@ -1,1 +1,1 @@
-utils/yara/keywords.yar
+utils/yara/*.yar
